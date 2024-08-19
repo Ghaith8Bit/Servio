@@ -17,7 +17,7 @@ After installing the package, add the service provider to your `config/app.php` 
 ```php
 'providers' => [
     // Other service providers...
-    MrClutch\Servio\ServioServiceProvider::class,
+    MrClutch\Servio\Providers\ServioServiceProvider::class,
 ],
 ```
 
