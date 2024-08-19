@@ -1,0 +1,119 @@
+<?php
+
+namespace App\Services\{{serviceName}}\Controllers;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use App\Services\{{serviceName}}\Facades\{{serviceName}}Facade;
+use App\Supports\Traits\ApiResponseTrait;
+use App\Services\{{serviceName}}\DTOs\{{serviceName}}DTO;
+use App\Services\{{serviceName}}\Resources\{{serviceName}}Resource;
+use App\Services\{{serviceName}}\Resources\{{serviceName}}Collection;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use InvalidArgumentException;
+
+class {{serviceName}}Controller extends Controller
+{
+    use ApiResponseTrait;
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function index()
+    {
+        $data = {{serviceName}}Facade::getAll();
+        $resources = new {{serviceName}}Collection($data);
+
+        return $this->successResponse($resources, '{{serviceName}}s retrieved successfully');
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function store(Request $request)
+    {
+        try {
+            $dto = {{serviceName}}DTO::fromRequest($request->all());
+            $data = {{serviceName}}Facade::create($dto);
+
+            $resource = new {{serviceName}}Resource($data);
+
+            return $this->successResponse($resource, '{{serviceName}} created successfully', 201);
+        } catch (InvalidArgumentException $e) {
+            return $this->errorResponse('Invalid data', 422, ['message' => $e->getMessage()]);
+        } catch (\Exception $e) {
+            return $this->errorResponse('An error occurred', 500, ['message' => $e->getMessage()]);
+        }
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function show($id)
+    {
+        try {
+            $data = {{serviceName}}Facade::getById($id);
+            $resource = new {{serviceName}}Resource($data);
+
+            return $this->successResponse($resource, '{{serviceName}} retrieved successfully');
+        } catch (ModelNotFoundException $e) {
+            return $this->errorResponse('{{serviceName}} not found', 404);
+        } catch (\Exception $e) {
+            return $this->errorResponse('An error occurred', 500, ['message' => $e->getMessage()]);
+        }
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function update(Request $request, $id)
+    {
+        try {
+            $dto = {{serviceName}}DTO::fromRequest($request->all());
+            $data = {{serviceName}}Facade::update($id, $dto);
+            $resource = new {{serviceName}}Resource($data);
+
+            return $this->successResponse($resource, '{{serviceName}} updated successfully');
+        } catch (InvalidArgumentException $e) {
+            return $this->errorResponse('Invalid data', 422, ['message' => $e->getMessage()]);
+        } catch (ModelNotFoundException $e) {
+            return $this->errorResponse('{{serviceName}} not found', 404);
+        } catch (\Exception $e) {
+            return $this->errorResponse('An error occurred', 500, ['message' => $e->getMessage()]);
+        }
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function destroy($id)
+    {
+        try {
+            $deleted = {{serviceName}}Facade::delete($id);
+
+            if (!$deleted) {
+                return $this->errorResponse('{{serviceName}} not found or unable to delete', 404);
+            }
+
+            return $this->successResponse(null, '{{serviceName}} deleted successfully');
+        } catch (\Exception $e) {
+            return $this->errorResponse('An error occurred', 500, ['message' => $e->getMessage()]);
+        }
+    }
+}

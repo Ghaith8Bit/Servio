@@ -1,0 +1,27 @@
+<?php
+
+namespace App\Services\{{serviceName}}\Resources;
+
+use Illuminate\Http\Resources\Json\ResourceCollection;
+
+class {{serviceName}}Collection extends ResourceCollection
+{
+    /**
+     * Transform the resource collection into an array.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return array
+     */
+    public function toArray($request)
+    {
+        return [
+            'data' => $this->collection->transform(function ($item) {
+                return new {{serviceName}}Resource($item);
+            }),
+            'meta' => [
+                'total' => $this->collection->count(),
+                // Add any other meta information you want here
+            ],
+        ];
+    }
+}

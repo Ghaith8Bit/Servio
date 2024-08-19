@@ -1,0 +1,93 @@
+<?php
+
+namespace App\Services\{{serviceName}}\Services;
+
+use Illuminate\Support\Collection;
+use App\Services\{{serviceName}}\Contracts\{{serviceName}}ServiceContract;
+use App\Services\{{serviceName}}\DTOs\{{serviceName}}DTO;
+use App\Services\{{serviceName}}\Repositories\{{serviceName}}Repository;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+
+class {{serviceName}}Service implements {{serviceName}}ServiceContract
+{
+    protected $repository;
+
+    /**
+     * Constructor
+     *
+     * @param \App\Services\{{serviceName}}\Repositories\{{serviceName}}Repository $repository
+     */
+    public function __construct({{serviceName}}Repository $repository)
+    {
+        $this->repository = $repository;
+    }
+
+    /**
+     * Get all records
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function getAll(): Collection
+    {
+        return $this->repository->all();
+    }
+
+    /**
+     * Create a new record
+     *
+     * @param \App\Services\{{serviceName}}\DTOs\{{serviceName}}DTO $dto
+     * @return mixed
+     */
+    public function create({{serviceName}}DTO $dto)
+    {
+        return $this->repository->create($dto->toArray());
+    }
+
+    /**
+     * Get a record by ID
+     *
+     * @param int $id
+     * @return mixed
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     */
+    public function getById($id)
+    {
+        $data = $this->repository->find($id);
+
+        if (!$data) {
+            throw new ModelNotFoundException("{{serviceName}} not found");
+        }
+
+        return $data;
+    }
+
+    /**
+     * Update a record by ID
+     *
+     * @param int $id
+     * @param \App\Services\{{serviceName}}\DTOs\{{serviceName}}DTO $dto
+     * @return mixed
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     */
+    public function update($id, {{serviceName}}DTO $dto)
+    {
+        $data = $this->repository->update($id, $dto->toArray());
+
+        if (!$data) {
+            throw new ModelNotFoundException("{{serviceName}} not found");
+        }
+
+        return $data;
+    }
+
+    /**
+     * Delete a record by ID
+     *
+     * @param int $id
+     * @return bool
+     */
+    public function delete($id): bool
+    {
+        return $this->repository->delete($id);
+    }
+}

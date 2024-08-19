@@ -1,0 +1,43 @@
+<?php
+
+namespace App\Services\{{serviceName}}\Providers;
+
+use App\Services\{{serviceName}}\Models\{{serviceName}};
+use App\Services\{{serviceName}}\Repositories\{{serviceName}}Repository;
+use App\Services\{{serviceName}}\Services\{{serviceName}}Service;
+use Illuminate\Support\ServiceProvider;
+
+class {{serviceName}}ServiceProvider extends ServiceProvider
+{
+    /**
+     * Register any application services.
+     *
+     * @return void
+     */
+    public function register()
+    {
+        // Register the repository with the container
+        $this->app->singleton({{serviceName}}Repository::class, function ($app) {
+            return new {{serviceName}}Repository(
+                $app->make({{serviceName}}::class)
+            );
+        });
+
+        // Register the service with the container
+        $this->app->singleton({{serviceName}}Service::class, function ($app) {
+            return new {{serviceName}}Service(
+                $app->make({{serviceName}}Repository::class)
+            );
+        });
+    }
+
+    /**
+     * Bootstrap any application services.
+     *
+     * @return void
+     */
+    public function boot()
+    {
+        // You can add any bootstrapping logic here if needed
+    }
+}

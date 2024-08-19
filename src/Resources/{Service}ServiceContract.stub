@@ -1,0 +1,51 @@
+<?php
+
+namespace App\Services\{{serviceName}}\Contracts;
+
+use App\Services\{{serviceName}}\DTOs\{{serviceName}}DTO;
+use Illuminate\Support\Collection;
+
+interface {{serviceName}}ServiceContract
+{
+    /**
+     * Get all records
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function getAll(): Collection;
+
+    /**
+     * Create a new record
+     *
+     * @param \App\Services\{{serviceName}}\DTOs\{{serviceName}}DTO $dto
+     * @return mixed
+     */
+    public function create({{serviceName}}DTO $dto);
+
+    /**
+     * Get a record by ID
+     *
+     * @param int $id
+     * @return mixed
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     */
+    public function getById(int $id);
+
+    /**
+     * Update a record by ID
+     *
+     * @param int $id
+     * @param \App\Services\{{serviceName}}\DTOs\{{serviceName}}DTO $dto
+     * @return mixed
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     */
+    public function update(int $id, {{serviceName}}DTO $dto);
+
+    /**
+     * Delete a record by ID
+     *
+     * @param int $id
+     * @return bool
+     */
+    public function delete(int $id): bool;
+}

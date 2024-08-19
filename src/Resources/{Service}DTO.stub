@@ -1,0 +1,22 @@
+<?php
+
+namespace App\Services\{{serviceName}}\DTOs;
+
+use App\Supports\DTO;
+
+class {{serviceName}}DTO extends DTO
+{
+    {{properties}}
+
+    /**
+     * Define validation rules for the DTO.
+     *
+     * @return array
+     */
+    protected static function rules(): array
+    {
+        return [
+            {{rules}}
+        ];
+    }
+}

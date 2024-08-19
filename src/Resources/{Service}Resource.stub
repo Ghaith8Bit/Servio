@@ -1,0 +1,21 @@
+<?php
+
+namespace App\Services\{{serviceName}}\Resources;
+
+use Illuminate\Http\Resources\Json\JsonResource;
+
+class {{serviceName}}Resource extends JsonResource
+{
+    /**
+     * Transform the resource into an array.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return array
+     */
+    public function toArray($request)
+    {
+        return [
+            {{transformation}}
+        ];
+    }
+}

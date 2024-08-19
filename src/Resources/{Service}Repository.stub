@@ -1,0 +1,101 @@
+<?php
+
+namespace App\Services\{{serviceName}}\Repositories;
+
+use App\Services\{{serviceName}}\Models\{{serviceName}};
+use App\Services\{{serviceName}}\Contracts\{{serviceName}}RepositoryContract;
+use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+
+class {{serviceName}}Repository implements {{serviceName}}RepositoryContract
+{
+    protected $model;
+
+    /**
+     * Constructor
+     *
+     * @param \App\Services\{{serviceName}}\Models\{{serviceName}} $model
+     */
+    public function __construct({{serviceName}} $model)
+    {
+        $this->model = $model;
+    }
+
+    /**
+     * Get all records.
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function all(): Collection
+    {
+        return $this->model->all();
+    }
+
+    /**
+     * Find a record by ID.
+     *
+     * @param int $id
+     * @return mixed
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     */
+    public function find(int $id)
+    {
+        $record = $this->model->find($id);
+
+        if (!$record) {
+            throw new ModelNotFoundException("{{serviceName}} not found");
+        }
+
+        return $record;
+    }
+
+    /**
+     * Create a new record.
+     *
+     * @param array $data
+     * @return mixed
+     */
+    public function create(array $data)
+    {
+        return $this->model->create($data);
+    }
+
+    /**
+     * Update a record by ID.
+     *
+     * @param int $id
+     * @param array $data
+     * @return mixed
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     */
+    public function update(int $id, array $data)
+    {
+        $record = $this->model->find($id);
+
+        if (!$record) {
+            throw new ModelNotFoundException("{{serviceName}} not found");
+        }
+
+        $record->update($data);
+
+        return $record;
+    }
+
+    /**
+     * Delete a record by ID.
+     *
+     * @param int $id
+     * @return bool
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     */
+    public function delete(int $id): bool
+    {
+        $record = $this->model->find($id);
+
+        if (!$record) {
+            throw new ModelNotFoundException("{{serviceName}} not found");
+        }
+
+        return $record->delete();
+    }
+}
