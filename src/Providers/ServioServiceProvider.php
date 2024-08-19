@@ -16,7 +16,7 @@ class ServioServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->publishes([
-            __DIR__ . '../config/servio.php' => config_path('servio.php')
+            __DIR__ . '/../config/servio.php' => config_path('servio.php')
         ], 'config');
     }
 
