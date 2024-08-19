@@ -3,6 +3,7 @@
 namespace Mrclutch\Servio\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Mrclutch\Servio\Console\Commands\GenerateServio;
 use Mrclutch\Servio\Supports\ServiceProviderLoader;
 
 class ServioServiceProvider extends ServiceProvider
@@ -12,7 +13,12 @@ class ServioServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot() {}
+    public function boot()
+    {
+        $this->publishes([
+            __DIR__ . '../config/servio.php' => config_path('servio.php')
+        ], 'config');
+    }
 
     /**
      * Register services.
@@ -22,5 +28,9 @@ class ServioServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->register(ServiceProviderLoader::class);
+
+        $this->commands([
+            GenerateServio::class,
+        ]);
     }
 }
