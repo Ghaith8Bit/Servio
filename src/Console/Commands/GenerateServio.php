@@ -74,8 +74,9 @@ class GenerateServio extends Command
      */
     protected function loadServiceConfig($serviceName)
     {
-        $configPath = __DIR__ . '/../../config/servio.php';
+        $configPath = base_path('config/servio.php');
         if (!$this->filesystem->exists($configPath)) {
+            $this->error("Configuration file not found at $configPath");
             return null;
         }
         $services = require $configPath;
