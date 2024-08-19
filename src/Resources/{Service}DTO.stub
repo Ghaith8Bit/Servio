@@ -2,7 +2,7 @@
 
 namespace App\Services\{{serviceName}}\DTOs;
 
-use App\Supports\DTO;
+use Mrclutch\Servio\Supports\DTO;
 
 class {{serviceName}}DTO extends DTO
 {

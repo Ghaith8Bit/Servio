@@ -5,11 +5,10 @@ namespace App\Services\{{serviceName}}\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Services\{{serviceName}}\Facades\{{serviceName}}Facade;
-use App\Supports\Traits\ApiResponseTrait;
+use Mrclutch\Servio\Supports\Traits\ApiResponseTrait;
 use App\Services\{{serviceName}}\DTOs\{{serviceName}}DTO;
 use App\Services\{{serviceName}}\Resources\{{serviceName}}Resource;
 use App\Services\{{serviceName}}\Resources\{{serviceName}}Collection;
-use Illuminate\Validation\ValidationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use InvalidArgumentException;
 

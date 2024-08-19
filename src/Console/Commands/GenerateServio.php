@@ -44,7 +44,7 @@ class GenerateServio extends Command
             return;
         }
 
-        // Generate the necessary files
+        // Define file paths
         $files = [
             "Migration.stub" => "database/migrations/" . date('Y_m_d_His') . "_create_{$config['table']}_table.php",
             "Model.stub" => "app/Services/$serviceName/Models/{$serviceName}.php",
@@ -70,7 +70,7 @@ class GenerateServio extends Command
     }
 
     /**
-     * Load the service configuration from the JSON file.
+     * Load the service configuration from the PHP file.
      */
     protected function loadServiceConfig($serviceName)
     {
@@ -87,7 +87,14 @@ class GenerateServio extends Command
      */
     protected function generateFile($serviceName, $stub, $destination, $config)
     {
-        $stubPath = __DIR__ . "../../Resources/$stub";
+        // Update stub path
+        $stubPath = __DIR__ . "/../../Resources/$stub";
+
+        if (!$this->filesystem->exists($stubPath)) {
+            $this->error("Stub file not found: $stubPath");
+            return;
+        }
+
         $content = $this->filesystem->get($stubPath);
 
         // Replace placeholders in the stub
