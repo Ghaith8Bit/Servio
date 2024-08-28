@@ -112,6 +112,11 @@ class GenerateServio extends Command
             $content = str_replace('{{transformation}}', $transformation, $content);
         }
 
+        if (strpos($stub, 'Collection') !== false) {
+            $tableName = $config['table'];
+            $content = str_replace('{{tableName}}', $tableName, $content);
+        }
+
         if (strpos($stub, 'Migration') !== false) {
             $tableName = $config['table'];
             $content = str_replace('{{tableName}}', $tableName, $content);
