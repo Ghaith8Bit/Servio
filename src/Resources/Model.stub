@@ -4,10 +4,11 @@ namespace App\Services\{{serviceName}}\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+{{ImageTraitNameSpace}}
 
 class {{serviceName}} extends Model
 {
-    use HasFactory;
+    use HasFactory{{ImageTraitName}};
 
     /**
      * The attributes that are mass assignable.
@@ -44,5 +45,6 @@ class {{serviceName}} extends Model
     protected $with = [
         // List relationships to auto-load
     ];
-
+    {{ImageMutator}}
+    {{ImageAccessor}}
 }

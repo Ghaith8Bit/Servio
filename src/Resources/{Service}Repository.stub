@@ -75,6 +75,7 @@ class {{serviceName}}Repository implements {{serviceName}}RepositoryContract
         if (!$record) {
             throw new ModelNotFoundException("{{serviceName}} not found");
         }
+        {{DeleteImage}}
 
         $record->update($data);
 
@@ -98,4 +99,5 @@ class {{serviceName}}Repository implements {{serviceName}}RepositoryContract
 
         return $record->delete();
     }
+    {{DeleteMethod}}
 }

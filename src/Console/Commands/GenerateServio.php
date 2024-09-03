@@ -122,6 +122,30 @@ class GenerateServio extends Command
             $content = str_replace('{{tableName}}', $tableName, $content);
         }
 
+        if (strpos($stub, 'Model') !== false) {
+            $imageMutator = '';
+            $imageAccessor = '';
+            $imageTraitName = '';
+            $imageTraitNameSpace = '';
+            if ($config['image'] ?? false) {
+                $imageMutator =  $this->getModelImageMutator();
+                $imageAccessor = $this->getModelImageAccessor();
+                $imageTraitName = ', HandlesBase64Image';
+                $imageTraitNameSpace = 'use Mrclutch\Servio\Supports\Traits\HandlesBase64Image;';
+            }
+            $content = str_replace(['{{ImageMutator}}', '{{ImageAccessor}}', '{{ImageTraitName}}', '{{ImageTraitNameSpace}}'], [$imageMutator, $imageAccessor, $imageTraitName, $imageTraitNameSpace], $content);
+        }
+
+        if (strpos($stub, 'Repository') !== false) {
+            $deleteImage = '';
+            $deleteMethod = '';
+            if ($config['image'] ?? false) {
+                $deleteImage = $this->deleteRepositoryImage();
+                $deleteMethod = $this->deleteRepositoryImageMethod();
+            }
+            $content = str_replace(['{{DeleteImage}}', '{{DeleteMethod}}'], [$deleteImage, $deleteMethod], $content);
+        }
+
         $destination = str_replace('{Service}', $serviceName, $destination);
         $this->filesystem->ensureDirectoryExists(dirname($destination));
         $this->filesystem->put($destination, $content);
@@ -193,8 +217,8 @@ class GenerateServio extends Command
         // Define the routes with the correct prefix
         $routes = <<<EOT
 
-// Routes for {$serviceName}
-Route::prefix('{$pluralServiceName}')->group(function () {
+    // Routes for {$serviceName}
+    Route::prefix('{$pluralServiceName}')->group(function () {
     Route::get('/', [App\Services\\{$serviceName}\Controllers\\{$serviceName}Controller::class, 'index']);
     Route::post('/', [App\Services\\{$serviceName}\Controllers\\{$serviceName}Controller::class, 'store']);
     Route::get('/{id}', [App\Services\\{$serviceName}\Controllers\\{$serviceName}Controller::class, 'show']);
@@ -208,5 +232,73 @@ EOT;
         $this->filesystem->append($routesPath, $routes);
 
         $this->info("Routes for $serviceName added to api.php");
+    }
+
+    protected function getModelImageAccessor()
+    {
+        return <<<EOT
+
+    /**
+     * Get the image URL attribute.
+     *
+     * @return string|null
+     */
+    public function getImageUrlAttribute(): ?string
+    {
+        return \$this->getImageUrl(\$this->attributes['image']);
+    }
+EOT;
+    }
+    protected function getModelImageMutator()
+    {
+        return <<<EOT
+
+    /**
+     * Set the image attribute, convert base64 to file and store it.
+     *
+     * @param string|null \$value
+     * @return void
+     */
+    public function setImageAttribute(?string \$value): void
+    {
+        if (\$value) {
+            \$this->attributes['image'] = \$this->saveBase64Image(\$value);
+        } else {
+            \$this->attributes['image'] = null;
+        }
+    }
+EOT;
+    }
+
+    protected function deleteRepositoryImage()
+    {
+        return <<<EOT
+
+    // Check if there is an existing image and delete it
+    if (isset(\$data['image'])) {
+        \$this->deleteExistingImage(\$record);
+    }
+EOT;
+    }
+    protected function deleteRepositoryImageMethod()
+    {
+        return <<<EOT
+
+    /**
+     * Delete the existing image from storage.
+     *
+     * @param \Illuminate\Database\Eloquent\Model \$record
+     * @return void
+     */
+    protected function deleteExistingImage(\$record): void
+    {
+        // Get the raw original image path from the database
+        \$imagePath = \$record->getRawOriginal('image');
+
+        if (\$imagePath) {  // Checks if there is an image path in the database
+            \Illuminate\Support\Facades\Storage::disk('public')->delete(\$imagePath);
+        }
+    }
+EOT;
     }
 }
