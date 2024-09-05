@@ -46,5 +46,4 @@ class {{serviceName}} extends Model
         // List relationships to auto-load
     ];
     {{ImageMutator}}
-    {{ImageAccessor}}
 }

@@ -3,7 +3,6 @@
 namespace Mrclutch\Servio\Supports\Traits;
 
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
 trait HandlesBase64Image
@@ -18,15 +17,6 @@ trait HandlesBase64Image
      */
     public function saveBase64Image(string $base64Image, int $maxSizeInKb = 4096): ?string
     {
-        // Validate the base64 image format
-        $validator = Validator::make(['image' => $base64Image], [
-            'image' => 'nullable|string|regex:/^data:image\/(jpeg|png|jpg|gif|svg+xml);base64,/'
-        ]);
-
-        if ($validator->fails()) {
-            throw new \Exception('Invalid Base64 image format');
-        }
-
         // Extract the image extension
         preg_match('/^data:image\/(\w+);base64,/', $base64Image, $matches);
         $extension = $matches[1];
@@ -39,6 +29,7 @@ trait HandlesBase64Image
         // Remove the base64 header to get the actual image data
         $imageData = preg_replace('/^data:image\/\w+;base64,/', '', $base64Image);
         $imageData = base64_decode($imageData);
+
 
         if ($imageData === false || empty($imageData)) {
             throw new \Exception('Base64 decode failed or image data is empty');

@@ -124,16 +124,14 @@ class GenerateServio extends Command
 
         if (strpos($stub, 'Model') !== false) {
             $imageMutator = '';
-            $imageAccessor = '';
             $imageTraitName = '';
             $imageTraitNameSpace = '';
             if ($config['image'] ?? false) {
                 $imageMutator =  $this->getModelImageMutator();
-                $imageAccessor = $this->getModelImageAccessor();
                 $imageTraitName = ', HandlesBase64Image';
                 $imageTraitNameSpace = 'use Mrclutch\Servio\Supports\Traits\HandlesBase64Image;';
             }
-            $content = str_replace(['{{ImageMutator}}', '{{ImageAccessor}}', '{{ImageTraitName}}', '{{ImageTraitNameSpace}}'], [$imageMutator, $imageAccessor, $imageTraitName, $imageTraitNameSpace], $content);
+            $content = str_replace(['{{ImageMutator}}', '{{ImageTraitName}}', '{{ImageTraitNameSpace}}'], [$imageMutator, $imageTraitName, $imageTraitNameSpace], $content);
         }
 
         if (strpos($stub, 'Repository') !== false) {
@@ -234,21 +232,6 @@ EOT;
         $this->info("Routes for $serviceName added to api.php");
     }
 
-    protected function getModelImageAccessor()
-    {
-        return <<<EOT
-
-    /**
-     * Get the image URL attribute.
-     *
-     * @return string|null
-     */
-    public function getImageUrlAttribute(): ?string
-    {
-        return \$this->getImageUrl(\$this->attributes['image']);
-    }
-EOT;
-    }
     protected function getModelImageMutator()
     {
         return <<<EOT
