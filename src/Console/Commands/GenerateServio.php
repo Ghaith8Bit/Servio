@@ -237,15 +237,16 @@ EOT;
         return <<<EOT
 
     /**
-     * Set the image attribute, convert base64 to file and store it.
+     * Set the image attribute, store the uploaded file.
      *
-     * @param string|null \$value
+     * @param \Illuminate\Http\UploadedFile|null \$file
      * @return void
      */
-    public function setImageAttribute(?string \$value): void
+    public function setImageAttribute(?UploadedFile \$file): void
     {
-        if (\$value) {
-            \$this->attributes['image'] = \$this->saveBase64Image(\$value);
+        if (\$file) {
+            // Use the saveUploadedFile method to handle the file upload
+            \$this->attributes['image'] = \$this->saveUploadedFile(\$file);
         } else {
             \$this->attributes['image'] = null;
         }
