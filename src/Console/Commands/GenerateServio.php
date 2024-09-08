@@ -128,8 +128,8 @@ class GenerateServio extends Command
             $imageTraitNameSpace = '';
             if ($config['image'] ?? false) {
                 $imageMutator =  $this->getModelImageMutator();
-                $imageTraitName = ', HandlesBase64Image';
-                $imageTraitNameSpace = 'use Mrclutch\Servio\Supports\Traits\HandlesBase64Image;';
+                $imageTraitName = ', HandlesUploadedImage';
+                $imageTraitNameSpace = 'use Mrclutch\Servio\Supports\Traits\HandlesUploadedImage;';
             }
             $content = str_replace(['{{ImageMutator}}', '{{ImageTraitName}}', '{{ImageTraitNameSpace}}'], [$imageMutator, $imageTraitName, $imageTraitNameSpace], $content);
         }

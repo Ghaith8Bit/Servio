@@ -2,41 +2,30 @@
 
 namespace Mrclutch\Servio\Supports\Traits;
 
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
-trait HandlesBase64Image
+trait HandlesUploadedImage
 {
     /**
-     * Save a Base64-encoded image to storage.
+     * Save an uploaded image to storage.
      *
-     * @param string $base64Image
+     * @param UploadedFile $file
      * @param int $maxSizeInKb Maximum size of the image in kilobytes
      * @return string|null The path to the saved image
      * @throws \Exception
      */
-    public function saveImage(string $base64Image, int $maxSizeInKb = 4096): ?string
+    public function saveImage(UploadedFile $file, int $maxSizeInKb = 4096): ?string
     {
-        // Extract the image extension
-        preg_match('/^data:image\/(\w+);base64,/', $base64Image, $matches);
-        $extension = $matches[1];
-
         // Validate the image extension
-        if (!in_array($extension, ['jpeg', 'png', 'jpg', 'gif', 'svg+xml'])) {
+        $extension = $file->getClientOriginalExtension();
+        if (!in_array($extension, ['jpeg', 'png', 'jpg', 'gif', 'svg'])) {
             throw new \Exception('Unsupported image format');
         }
 
-        // Remove the base64 header to get the actual image data
-        $imageData = preg_replace('/^data:image\/\w+;base64,/', '', $base64Image);
-        $imageData = base64_decode($imageData);
-
-
-        if ($imageData === false || empty($imageData)) {
-            throw new \Exception('Base64 decode failed or image data is empty');
-        }
-
         // Check the size of the image
-        $imageSizeInKb = strlen($imageData) / 1024;
+        $imageSizeInKb = $file->getSize() / 1024;
         if ($imageSizeInKb > $maxSizeInKb) {
             throw new \Exception('Image size exceeds the maximum allowed size of ' . $maxSizeInKb . ' KB');
         }
@@ -47,7 +36,7 @@ trait HandlesBase64Image
         $imagePath = $imageDirectory . '/' . $imageName;
 
         // Save the image to the specified disk
-        Storage::disk('public')->put($imagePath, $imageData);
+        Storage::disk('public')->putFileAs($imageDirectory, $file, $imageName);
 
         return $imagePath;
     }
@@ -60,11 +49,8 @@ trait HandlesBase64Image
      */
     public function deleteImage(?string $imagePath = null): void
     {
-        if ($imagePath) {
-            // Delete the image from storage
-            if (Storage::disk('public')->exists($imagePath)) {
-                Storage::disk('public')->delete($imagePath);
-            }
+        if ($imagePath && Storage::disk('public')->exists($imagePath)) {
+            Storage::disk('public')->delete($imagePath);
         }
     }
 
